@@ -8,12 +8,12 @@ namespace engine::vulkan {
 
 Surface::Surface(const Instance &instance, const Window &window)
     : instance(instance) {
-  if (glfwCreateWindowSurface(instance.get(), window.data(), nullptr,
+  if (glfwCreateWindowSurface(instance.data(), window.data(), nullptr,
                               &surface) != VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
   }
 }
 
-Surface::~Surface() { vkDestroySurfaceKHR(instance.get(), surface, nullptr); }
+Surface::~Surface() { vkDestroySurfaceKHR(instance.data(), surface, nullptr); }
 
 } // namespace engine::vulkan

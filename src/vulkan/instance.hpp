@@ -12,7 +12,7 @@ public:
   Instance(const Config &config);
   ~Instance();
 
-  VkInstance get() const { return instance; };
+  VkInstance data() const { return instance; };
 
 private:
   VkInstance instance;

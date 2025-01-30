@@ -20,7 +20,7 @@ public:
   Surface(Surface &&) = delete;
   Surface &operator=(Surface &&) = delete;
 
-  VkSurfaceKHR get() const { return surface; };
+  VkSurfaceKHR data() const { return surface; };
 
 private:
   VkSurfaceKHR surface;

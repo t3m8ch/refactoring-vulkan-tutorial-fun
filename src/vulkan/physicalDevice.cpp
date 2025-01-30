@@ -16,27 +16,27 @@ namespace engine::vulkan {
 PhysicalDevice::PhysicalDevice(const Instance &instance,
                                const Surface &surface) {
   uint32_t deviceCount = 0;
-  vkEnumeratePhysicalDevices(instance.get(), &deviceCount, nullptr);
+  vkEnumeratePhysicalDevices(instance.data(), &deviceCount, nullptr);
 
   if (deviceCount == 0) {
     throw std::runtime_error("failed to find GPUs with Vulkan support!");
   }
 
   std::vector<VkPhysicalDevice> devices(deviceCount);
-  vkEnumeratePhysicalDevices(instance.get(), &deviceCount, devices.data());
+  vkEnumeratePhysicalDevices(instance.data(), &deviceCount, devices.data());
 
   std::multimap<int32_t, VkPhysicalDevice> candidates;
 
   for (const auto &device : devices) {
-    int score = rateDeviceSuitability(device, surface.get());
+    int score = rateDeviceSuitability(device, surface.data());
     candidates.insert(std::make_pair(score, device));
   }
 
   if (candidates.rbegin()->first > 0) {
     physicalDevice = candidates.rbegin()->second;
 
-    swapChainSupport = querySwapChainSupport(physicalDevice, surface.get());
-    queueFamilyIndices = findQueueFamilies(physicalDevice, surface.get());
+    swapChainSupport = querySwapChainSupport(physicalDevice, surface.data());
+    queueFamilyIndices = findQueueFamilies(physicalDevice, surface.data());
   } else {
     throw std::runtime_error("Failed to find a suitable GPU!");
   }
