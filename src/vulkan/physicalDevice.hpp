@@ -34,7 +34,7 @@ public:
   PhysicalDevice(PhysicalDevice &&) = delete;
   PhysicalDevice &operator=(PhysicalDevice &&) = delete;
 
-  VkPhysicalDevice data() const;
+  VkPhysicalDevice data() const { return physicalDevice; };
 
   QueueFamilyIndices getQueueFamilyIndices() const {
     return queueFamilyIndices;
