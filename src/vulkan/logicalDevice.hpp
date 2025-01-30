@@ -18,11 +18,13 @@ public:
   VkDevice data() const { return device; }
   VkQueue getGraphicsQueue() const { return graphicsQueue; }
   VkQueue getPresentQueue() const { return presentQueue; }
+  const PhysicalDevice &getPhysicalDevice() const { return physicalDevice; }
 
 private:
   VkDevice device;
   VkQueue graphicsQueue;
   VkQueue presentQueue;
+  const PhysicalDevice &physicalDevice;
 };
 
 } // namespace engine::vulkan

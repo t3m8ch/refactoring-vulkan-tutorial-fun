@@ -24,6 +24,7 @@ public:
   struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
+    VkSurfaceFormatKHR chosenFormat;
     std::vector<VkPresentModeKHR> presentModes;
   };
 

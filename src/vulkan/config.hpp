@@ -6,6 +6,8 @@
 
 namespace engine::vulkan {
 
+enum PresentMode { FIFO, MAILBOX, IMMEDIATE };
+
 struct Version {
   uint32_t major;
   uint32_t minor;
@@ -26,6 +28,8 @@ struct Config {
   std::string_view engineName;
   Version engineVersion;
   bool enableValidationLayers;
+
+  PresentMode presentMode;
 };
 
 } // namespace engine::vulkan

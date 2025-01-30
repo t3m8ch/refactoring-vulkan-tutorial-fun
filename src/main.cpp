@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "vulkan/app.hpp"
+#include "vulkan/config.hpp"
 
 int main() {
   engine::vulkan::Config config;
@@ -14,6 +15,8 @@ int main() {
   config.engineName = "Refactoring Vulkan Tutorial";
   config.engineVersion = {0, 0, 1};
   config.enableValidationLayers = true;
+
+  config.presentMode = engine::vulkan::FIFO;
 
   try {
     engine::vulkan::VulkanApp app{config};

@@ -4,7 +4,9 @@
 #include "instance.hpp"
 #include "logicalDevice.hpp"
 #include "physicalDevice.hpp"
+#include "renderPass.hpp"
 #include "surface.hpp"
+#include "swapChain.hpp"
 #include "window.hpp"
 
 namespace engine::vulkan {
@@ -21,5 +23,7 @@ private:
   Surface surface{instance, window};
   PhysicalDevice physicalDevice{instance, surface};
   LogicalDevice logicalDevice{physicalDevice};
+  RenderPass renderPass{logicalDevice};
+  SwapChain swapChain{logicalDevice, window, surface, renderPass, config};
 };
 } // namespace engine::vulkan

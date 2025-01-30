@@ -8,7 +8,8 @@
 
 namespace engine::vulkan {
 
-LogicalDevice::LogicalDevice(const PhysicalDevice &physicalDevice) {
+LogicalDevice::LogicalDevice(const PhysicalDevice &physicalDevice)
+    : physicalDevice(physicalDevice) {
   auto indices = physicalDevice.getQueueFamilyIndices();
 
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
