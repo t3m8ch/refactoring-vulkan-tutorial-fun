@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "instance.hpp"
+#include "logicalDevice.hpp"
 #include "physicalDevice.hpp"
 #include "surface.hpp"
 #include "window.hpp"
@@ -19,5 +20,6 @@ private:
   Instance instance{config};
   Surface surface{instance, window};
   PhysicalDevice physicalDevice{instance, surface};
+  LogicalDevice logicalDevice{physicalDevice};
 };
 } // namespace engine::vulkan
