@@ -18,6 +18,8 @@ int main() {
 
   config.presentMode = engine::vulkan::FIFO;
 
+  config.shadersDirectory = "../shaders";
+
   try {
     engine::vulkan::VulkanApp app{config};
     app.run();

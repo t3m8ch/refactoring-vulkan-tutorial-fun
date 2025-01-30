@@ -30,6 +30,8 @@ struct Config {
   bool enableValidationLayers;
 
   PresentMode presentMode;
+
+  std::string_view shadersDirectory;
 };
 
 } // namespace engine::vulkan

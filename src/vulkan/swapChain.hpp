@@ -21,6 +21,7 @@ public:
   SwapChain &operator=(SwapChain &&) = delete;
 
   VkSwapchainKHR data() const { return swapChain; }
+  VkExtent2D getExtent() const { return swapChainExtent; }
 
 private:
   VkSwapchainKHR swapChain;
