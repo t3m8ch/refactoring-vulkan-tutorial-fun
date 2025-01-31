@@ -8,6 +8,7 @@
 #include "renderPass.hpp"
 #include "surface.hpp"
 #include "swapChain.hpp"
+#include "sync.hpp"
 #include "window.hpp"
 
 namespace engine::vulkan {
@@ -27,5 +28,6 @@ private:
   RenderPass renderPass{logicalDevice};
   SwapChain swapChain{logicalDevice, window, surface, renderPass, config};
   Pipeline pipeline{logicalDevice, swapChain, renderPass, config};
+  Sync sync{logicalDevice};
 };
 } // namespace engine::vulkan
