@@ -1,5 +1,6 @@
 #pragma once
 
+#include "commandPool.hpp"
 #include "config.hpp"
 #include "instance.hpp"
 #include "logicalDevice.hpp"
@@ -29,5 +30,6 @@ private:
   SwapChain swapChain{logicalDevice, window, surface, renderPass, config};
   Pipeline pipeline{logicalDevice, swapChain, renderPass, config};
   Sync sync{logicalDevice};
+  CommandPool commandPool{logicalDevice};
 };
 } // namespace engine::vulkan
