@@ -20,6 +20,12 @@ public:
   VkQueue getPresentQueue() const { return presentQueue; }
   const PhysicalDevice &getPhysicalDevice() const { return physicalDevice; }
 
+  void graphicsQueueSubmit(VkCommandBuffer commandBuffer,
+                           VkSemaphore waitSemaphore,
+                           VkSemaphore signalSemaphore,
+                           VkFence inFlightFence) const;
+  void waitIdle() const;
+
 private:
   VkDevice device;
   VkQueue graphicsQueue;

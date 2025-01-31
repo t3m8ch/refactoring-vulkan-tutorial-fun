@@ -10,6 +10,11 @@
 namespace engine::vulkan {
 class Window {
 public:
+  struct Size {
+    uint32_t width;
+    uint32_t height;
+  };
+
   Window(const Config &config);
   ~Window();
 
@@ -18,10 +23,17 @@ public:
   Window(Window &&) = delete;
   Window &operator=(Window &&) = delete;
 
+  bool resized = false;
+
   GLFWwindow *data() const { return window; };
+  Size getSize() const;
+  void waitEvents() const;
 
 private:
   GLFWwindow *window;
   const Config &config;
+
+  static void framebufferResizeCallback(GLFWwindow *window, int width,
+                                        int height);
 };
 } // namespace engine::vulkan

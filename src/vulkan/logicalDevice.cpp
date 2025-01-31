@@ -48,4 +48,34 @@ LogicalDevice::LogicalDevice(const PhysicalDevice &physicalDevice)
 
 LogicalDevice::~LogicalDevice() { vkDestroyDevice(device, nullptr); }
 
+void LogicalDevice::graphicsQueueSubmit(VkCommandBuffer commandBuffer,
+                                        VkSemaphore waitSemaphore,
+                                        VkSemaphore signalSemaphore,
+                                        VkFence inFlightFence) const {
+  VkSubmitInfo submitInfo{};
+  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+  submitInfo.pCommandBuffers = &commandBuffer;
+
+  std::array<VkSemaphore, 1> waitSemaphores = {waitSemaphore};
+  std::array<VkPipelineStageFlags, 1> waitStages = {
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+
+  submitInfo.waitSemaphoreCount = 1;
+  submitInfo.pWaitSemaphores = waitSemaphores.data();
+  submitInfo.pWaitDstStageMask = waitStages.data();
+  submitInfo.commandBufferCount = 1;
+  submitInfo.pCommandBuffers = &commandBuffer;
+
+  std::array<VkSemaphore, 1> signalSemaphores = {signalSemaphore};
+  submitInfo.signalSemaphoreCount = 1;
+  submitInfo.pSignalSemaphores = signalSemaphores.data();
+
+  if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("failed to submit draw command buffer!");
+  }
+}
+
+void LogicalDevice::waitIdle() const { vkDeviceWaitIdle(device); }
+
 } // namespace engine::vulkan

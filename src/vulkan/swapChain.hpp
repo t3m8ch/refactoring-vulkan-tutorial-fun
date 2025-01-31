@@ -10,7 +10,7 @@ namespace engine::vulkan {
 
 class SwapChain {
 public:
-  SwapChain(const LogicalDevice &logicalDevice, const Window &window,
+  SwapChain(const LogicalDevice &logicalDevice, Window &window,
             const Surface &surface, const RenderPass &renderPass,
             const Config &config);
   ~SwapChain();
@@ -22,8 +22,19 @@ public:
 
   VkSwapchainKHR data() const { return swapChain; }
   VkExtent2D getExtent() const { return swapChainExtent; }
+  uint32_t getCurrentFrame() const { return currentFrame; }
+  VkFramebuffer getFramebuffer(uint32_t frameIndex) const {
+    return swapChainFramebuffers[frameIndex];
+  }
+
+  std::optional<uint32_t> acquireNextImage(VkSemaphore semaphore);
+  void present(uint32_t imageIndex, VkSemaphore signalSemaphore);
+  void recreate();
+  void nextFrame();
 
 private:
+  uint32_t currentFrame = 0;
+
   VkSwapchainKHR swapChain;
   std::vector<VkImage> swapChainImages;
   std::vector<VkImageView> swapChainImageViews;
@@ -32,7 +43,12 @@ private:
   std::vector<VkFramebuffer> swapChainFramebuffers;
 
   const LogicalDevice &logicalDevice;
+  Window &window;
   const Config &config;
+  const Surface &surface;
+  const RenderPass &renderPass;
+
+  void cleanup();
 
   VkPresentModeKHR chooseSwapPresentMode(
       const std::vector<VkPresentModeKHR> &availablePresentModes);

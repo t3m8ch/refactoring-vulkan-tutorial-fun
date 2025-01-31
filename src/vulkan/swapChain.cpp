@@ -1,4 +1,5 @@
 #include "swapChain.hpp"
+#include "constants.hpp"
 #include "logicalDevice.hpp"
 #include "window.hpp"
 
@@ -6,20 +7,24 @@
 #include <iostream>
 
 #include <limits>
+#include <stdexcept>
 #include <vulkan/vulkan_core.h>
 
 namespace engine::vulkan {
 
-SwapChain::SwapChain(const LogicalDevice &logicalDevice, const Window &window,
+SwapChain::SwapChain(const LogicalDevice &logicalDevice, Window &window,
                      const Surface &surface, const RenderPass &renderPass,
                      const Config &config)
-    : config(config), logicalDevice(logicalDevice) {
+    : config(config), logicalDevice(logicalDevice), window(window),
+      surface(surface), renderPass(renderPass) {
   createSwapChain(logicalDevice, window, surface, config);
   createImageViews(logicalDevice);
   createFramebuffers(logicalDevice, renderPass);
 }
 
-SwapChain::~SwapChain() {
+SwapChain::~SwapChain() { cleanup(); }
+
+void SwapChain::cleanup() {
   for (const auto &framebuffer : swapChainFramebuffers) {
     vkDestroyFramebuffer(logicalDevice.data(), framebuffer, nullptr);
   }
@@ -194,6 +199,65 @@ SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities,
 
     return actualExtent;
   }
+}
+
+void SwapChain::recreate() {
+  auto windowSize = window.getSize();
+  while (windowSize.width == 0 || windowSize.height == 0) {
+    windowSize = window.getSize();
+    window.waitEvents();
+  }
+
+  logicalDevice.waitIdle();
+  cleanup();
+
+  createSwapChain(logicalDevice, window, surface, config);
+  createImageViews(logicalDevice);
+  createFramebuffers(logicalDevice, renderPass);
+}
+
+std::optional<uint32_t> SwapChain::acquireNextImage(VkSemaphore semaphore) {
+  uint32_t imageIndex;
+  VkResult result =
+      vkAcquireNextImageKHR(logicalDevice.data(), swapChain, UINT64_MAX,
+                            semaphore, VK_NULL_HANDLE, &imageIndex);
+
+  if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+    recreate();
+    return std::nullopt;
+  } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    throw std::runtime_error("failed to acquire swap chain image!");
+  }
+
+  return imageIndex;
+}
+
+void SwapChain::present(uint32_t imageIndex, VkSemaphore signalSemaphore) {
+  std::array<VkSemaphore, 1> signalSemaphores = {signalSemaphore};
+
+  VkPresentInfoKHR presentInfo{};
+  presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+  presentInfo.waitSemaphoreCount = 1;
+  presentInfo.pWaitSemaphores = signalSemaphores.data();
+
+  std::array<VkSwapchainKHR, 1> swapChains = {swapChain};
+  presentInfo.swapchainCount = 1;
+  presentInfo.pSwapchains = swapChains.data();
+  presentInfo.pImageIndices = &imageIndex;
+
+  auto result =
+      vkQueuePresentKHR(logicalDevice.getPresentQueue(), &presentInfo);
+  if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
+      window.resized) {
+    window.resized = false;
+    recreate();
+  } else if (result != VK_SUCCESS) {
+    throw std::runtime_error("failed to present swap chain image!");
+  }
+}
+
+void SwapChain::nextFrame() {
+  currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 } // namespace engine::vulkan

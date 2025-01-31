@@ -24,6 +24,9 @@ public:
     return inFlightFences;
   }
 
+  void waitForInFlightFence(uint32_t fenceIndex);
+  void resetInFilghtFence(uint32_t fenceIndex);
+
 private:
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;

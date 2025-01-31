@@ -30,6 +30,8 @@ private:
   SwapChain swapChain{logicalDevice, window, surface, renderPass, config};
   Pipeline pipeline{logicalDevice, swapChain, renderPass, config};
   Sync sync{logicalDevice};
-  CommandPool commandPool{logicalDevice};
+  CommandPool commandPool{logicalDevice, renderPass, swapChain, pipeline};
+
+  void drawFrame();
 };
 } // namespace engine::vulkan

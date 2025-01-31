@@ -46,4 +46,13 @@ Sync::~Sync() {
   }
 }
 
+void Sync::waitForInFlightFence(uint32_t fenceIndex) {
+  vkWaitForFences(logicalDevice.data(), 1, &inFlightFences[fenceIndex], VK_TRUE,
+                  UINT64_MAX);
+}
+
+void Sync::resetInFilghtFence(uint32_t fenceIndex) {
+  vkResetFences(logicalDevice.data(), 1, &inFlightFences[fenceIndex]);
+}
+
 } // namespace engine::vulkan
